@@ -13,27 +13,36 @@ public class DisasterVictim {
     private String gender;
     private static int counter;
 
+    // regex for validating the date format (YYYY-MM-DD)
+    private static final String DATE_PATTERN = "^\\d{4}-\\d{2}-\\d{2}$";
+
     // Constructor
     public DisasterVictim(String firstName, final String ENTRY_DATE){
+        // Validate date for constructor.
+        Pattern pattern = Pattern.compile(DATE_PATTERN);
+        Matcher matcher = pattern.matcher(ENTRY_DATE);
+        if (!matcher.matches()) {
+            throw new IllegalArgumentException("Invalid date format.");
+        }
+
         this.firstName = firstName;
         this.ENTRY_DATE = ENTRY_DATE;
+        this.ASSIGNED_SOCIAL_ID = ++counter;
         
-        this.ASSIGNED_SOCIAL_ID = 0;
-        this.medicalRecords = null;
-        this.personalBelongings = null;
-        counter++;
+        // To fix the null errors I keep getting.
+        this.familyConnections = new FamilyRelation[1];
+        this.personalBelongings = new Supply[1];
     }
 
     // ADDITIONAL METHODS
-    
+    // Note: The "remove" and "add" methods have the same implementation and logic all throughout, just different variable names. (In other files too)
     public void addPersonalBelonging(Supply supply){
         // If personalBelongings[] array is empty add the supply.
-        if(personalBelongings == null){
-            personalBelongings = new Supply[1];
-            personalBelongings[0] = supply;
-        }
+        if (personalBelongings == null) {
+            personalBelongings = new Supply[]{supply};
+        } 
         // Else, make room for an extra space.
-        else{
+        else {
             Supply[] newBelongingsArray = new Supply[personalBelongings.length + 1];
             System.arraycopy(personalBelongings, 0, newBelongingsArray, 0, personalBelongings.length);
             newBelongingsArray[personalBelongings.length] = supply;
@@ -41,58 +50,70 @@ public class DisasterVictim {
         }
     }
 
+
     public void removePersonalBelonging(Supply supply){
-        // If personalBelongings[] array is not empty, do the method.
-        if(personalBelongings != null){
-            for(int i = 0; i < personalBelongings.length; i++){
-                if(personalBelongings[i] == supply){
-                    for(int j = i; j < personalBelongings.length; j++){
-                        personalBelongings[j] = personalBelongings[j+1];
-                    }
-                    personalBelongings[personalBelongings.length - 1] = null;
+        // Will only performt he method if the supplies array is not empty.
+        if (personalBelongings != null && personalBelongings.length > 0) {
+            int removeIndex = -1;
+            // Find the index to remove.
+            for (int i = 0; i < personalBelongings.length; i++) {
+                if (personalBelongings[i] == supply) {
+                    removeIndex = i;
                     break;
                 }
+            }
+            if (removeIndex != -1) {
+                Supply[] newBelongingsArray = new Supply[personalBelongings.length - 1];
+                System.arraycopy(personalBelongings, 0, newBelongingsArray, 0, removeIndex);
+                System.arraycopy(personalBelongings, removeIndex + 1, newBelongingsArray, removeIndex, personalBelongings.length - removeIndex - 1);
+                personalBelongings = newBelongingsArray;
             }
         }
     }
 
     public void addFamilyConnection(FamilyRelation familyConnection){
-        // If famillyConnections[] array is empty add the familyConnection.
-        if(familyConnections == null){
-            familyConnections = new FamilyRelation[1];
-            familyConnections[0] = familyConnection;
-        }
+        // If familyConnections[] array is empty add the supply.
+        if (familyConnections == null) {
+             familyConnections = new FamilyRelation[1];
+             familyConnections[1] = familyConnection;
+        } 
+        // Else, make room for an extra space.
         else {
-            FamilyRelation[] newFamilyConnectionsArray = new FamilyRelation[familyConnections.length + 1];
-            System.arraycopy(familyConnections, 0, newFamilyConnectionsArray, 0, familyConnections.length);
-            newFamilyConnectionsArray[familyConnections.length] = familyConnection;
-            familyConnections = newFamilyConnectionsArray;
-        }
-
+            FamilyRelation[] newRelationsArray = new FamilyRelation[familyConnections.length + 1];
+            System.arraycopy(familyConnections, 0, newRelationsArray, 0, familyConnections.length);
+            newRelationsArray[personalBelongings.length] = familyConnection;
+            familyConnections = newRelationsArray;
+            }
     }
 
     public void removeFamilyConnection(FamilyRelation familyConnection){
-        // If familyConnections[] array is not empty, do the method.
-        if(familyConnections != null){
-            for(int i = 0; i < familyConnections.length; i++){
-                if(familyConnections[i] == familyConnection){
-                    for(int j = i; j < familyConnections.length; j++){
-                        familyConnections[j] = familyConnections[j+1];
-                    }
-                    familyConnections[familyConnections.length - 1] = null;
+        // Will only perform method if the familyConnections array is not empty.
+        if (familyConnections != null && familyConnections.length > 0) {
+            int removeIndex = -1;
+            // Find the index to remove.
+            for (int i = 0; i < familyConnections.length; i++) {
+                if (familyConnections[i] == familyConnection) {
+                    removeIndex = i;
                     break;
                 }
+            }
+            if (removeIndex != -1) {
+                FamilyRelation[] newFamilyConnectionsArray = new FamilyRelation[familyConnections.length - 1];
+                System.arraycopy(familyConnections, 0, newFamilyConnectionsArray, 0, removeIndex);
+                System.arraycopy(familyConnections, removeIndex + 1, newFamilyConnectionsArray, removeIndex, familyConnections.length - removeIndex - 1);
+                familyConnections = newFamilyConnectionsArray;
             }
         }
     }
 
     public void addMedicalRecord(MedicalRecord medicalRecord){
-        // ..Same logic for add methods.
-        if(medicalRecords == null){
+        // If medicalRecord[] array is empty add the supply.
+        if (medicalRecords == null){
             medicalRecords = new MedicalRecord[1];
-            medicalRecords[0] = medicalRecord; 
+            medicalRecords[1] = medicalRecord;
         }
-        else {
+        // Else, make room for an extra space.
+        else{
             MedicalRecord[] newMedicalRecordsArray = new MedicalRecord[medicalRecords.length + 1];
             System.arraycopy(medicalRecords, 0, newMedicalRecordsArray, 0, medicalRecords.length);
             newMedicalRecordsArray[medicalRecords.length] = medicalRecord;
@@ -155,6 +176,13 @@ public class DisasterVictim {
     }
 
     public void setDateOfBirth(String dateOfBirth){
+        // Validate date for setting date of birth.
+        Pattern pattern = Pattern.compile(DATE_PATTERN);
+        Matcher matcher = pattern.matcher(dateOfBirth);
+        if (!matcher.matches()) {
+            throw new IllegalArgumentException("Invalid date format.");
+        }
+
         this.dateOfBirth = dateOfBirth;
     }
 

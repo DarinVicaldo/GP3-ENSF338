@@ -15,8 +15,6 @@ public class Location {
     } 
 
     // ADDITIONAL METHODS
-    
-    // addOccupant(occupant:DisasterVictim)
     public void addOccupant(DisasterVictim occupant){
         // If occupants[] array is empty add the occupant.
         if(occupants == null){
@@ -32,37 +30,57 @@ public class Location {
         }
     }
 
-    // removeOccupant(occupant: DisasterVictim)
     public void removeOccupant(DisasterVictim occupant){
-        for (int i = 0; i < occupants.length; i++){
-            if(occupants[i] == occupant){
-                for (int j = i; j < occupants.length; j++){
-                    occupants[j] = occupants[j+1];
+        // Will only perform method if the occupants array is not empty.
+        if (occupants != null && occupants.length > 0) {
+            int removeIndex = -1;
+            // Find the index to remove.
+            for (int i = 0; i < occupants.length; i++) {
+                if (occupants[i] == occupant) {
+                    removeIndex = i;
+                    break;
                 }
-                occupants[occupants.length - 1] = null;
-                break;
+            }
+            if (removeIndex != -1) {
+                DisasterVictim[] newoccupantsArray = new DisasterVictim[occupants.length - 1];
+                System.arraycopy(occupants, 0, newoccupantsArray, 0, removeIndex);
+                System.arraycopy(occupants, removeIndex + 1, newoccupantsArray, removeIndex, occupants.length - removeIndex - 1);
+                occupants = newoccupantsArray;
             }
         }
     }
 
-    // addSupply(supply: Supply)
     public void addSupply(Supply supply){
-        for (int i = 0; i < supplies.length; i++){
-            if(supplies[i] == null){
-                supplies[i] = supply;
-            }
+        // If occupants[] array is empty add the occupant.
+        if(supplies == null){
+            supplies = new Supply[1];
+            supplies[0] = supply;
+        }
+        // Else, make room for an extra space.
+        else{
+            Supply[] newSuppliesArray = new Supply[occupants.length + 1];
+            System.arraycopy(supplies, 0, newSuppliesArray, 0, supplies.length);
+            newSuppliesArray[supplies.length] = supply;
+            supplies = newSuppliesArray;
         }
     }
 
-    //  removeSupply(supply:Supply)
     public void removeSupply(Supply supply){
-        for (int i = 0; i < supplies.length; i++){
-            if(supplies[i] == supply){
-                for (int j = i; j < supplies.length; j++){
-                    supplies[j] = supplies[j + 1];
+        // Will only perform method if the supplies array is not empty.
+        if (supplies != null && supplies.length > 0) {
+            int removeIndex = -1;
+            // Find the index to remove.
+            for (int i = 0; i < supplies.length; i++) {
+                if (supplies[i] == supply) {
+                    removeIndex = i;
+                    break;
                 }
-                supplies[supplies.length - 1] = null;
-                break;
+            }
+            if (removeIndex != -1) {
+                Supply[] newSuppliesArray = new Supply[supplies.length - 1];
+                System.arraycopy(supplies, 0, newSuppliesArray, 0, removeIndex);
+                System.arraycopy(supplies, removeIndex + 1, newSuppliesArray, removeIndex, supplies.length - removeIndex - 1);
+                supplies = newSuppliesArray;
             }
         }
     }

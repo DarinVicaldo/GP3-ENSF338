@@ -1,5 +1,7 @@
 package edu.ucalgary.oop;
 
+import java.util.regex.*;
+
 public class ReliefService{
     private Inquirer inquirer;
     private DisasterVictim missingPerson;
@@ -7,8 +9,18 @@ public class ReliefService{
     private String infoProvided;
     private Location lastKnownLocation;
 
+    // regex for validating the date format (YYYY-MM-DD)
+    private static final String DATE_PATTERN = "^\\d{4}-\\d{2}-\\d{2}$";
+
     // Constructor
     public ReliefService(Inquirer inquirer, DisasterVictim missingPerson, String dateOfInquiry, String infoProvided, Location lastKnownLocation){
+        // Validate date for constructor.
+        Pattern pattern = Pattern.compile(DATE_PATTERN);
+        Matcher matcher = pattern.matcher(dateOfInquiry);
+        if (!matcher.matches()) {
+            throw new IllegalArgumentException("Invalid date format.");
+        }
+
         this.inquirer = inquirer;
         this.missingPerson = missingPerson;
         this.dateOfInquiry = dateOfInquiry;
@@ -58,6 +70,13 @@ public class ReliefService{
     }
 
     public void setDateOfInquiry(String dateOfInquiry){
+        // Validate date for constructor.
+        Pattern pattern = Pattern.compile(DATE_PATTERN);
+        Matcher matcher = pattern.matcher(dateOfInquiry);
+        if (!matcher.matches()) {
+            throw new IllegalArgumentException("Invalid date format.");
+        }
+        
         this.dateOfInquiry = dateOfInquiry;
     }
 
