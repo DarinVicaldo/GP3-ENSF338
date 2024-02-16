@@ -70,7 +70,7 @@ public class ReliefService{
     }
 
     public void setDateOfInquiry(String dateOfInquiry){
-        // Validate date for constructor.
+        // Validate date for setter.
         Pattern pattern = Pattern.compile(DATE_PATTERN);
         Matcher matcher = pattern.matcher(dateOfInquiry);
         if (!matcher.matches()) {
